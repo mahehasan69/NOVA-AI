@@ -11,7 +11,7 @@ const PROVIDERS = {
   cohere:{secret:"COHERE_API_KEY",label:"Cohere"},
   gemini:{secret:"GEMINI_API_KEY",label:"Gemini"}
 };
-const cors = {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET,POST,OPTIONS","Access-Control-Allow-Headers":"Authorization,Content-Type,X-API-Key,X-NOVA-Admin-Session"};
+const cors = {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET,POST,DELETE,OPTIONS","Access-Control-Allow-Headers":"Authorization,Content-Type,X-API-Key,X-NOVA-Admin-Session"};
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{"Content-Type":"application/json; charset=utf-8",...cors}});
 const enc=s=>new TextEncoder().encode(s);
 const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_");
