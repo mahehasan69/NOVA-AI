@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS provider_cooldowns (credential_id TEXT PRIMARY KEY, p
 
 CREATE TABLE IF NOT EXISTS user_memories (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, content TEXT NOT NULL, category TEXT NOT NULL DEFAULT 'general', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE INDEX IF NOT EXISTS idx_user_memories_user ON user_memories(user_id, created_at);
+
+CREATE TABLE IF NOT EXISTS user_quality_settings (user_id TEXT PRIMARY KEY, enabled INTEGER NOT NULL DEFAULT 1, strictness INTEGER NOT NULL DEFAULT 2, review_max_tokens INTEGER NOT NULL DEFAULT 700, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
