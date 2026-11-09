@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import httpx
 from typing import Any
 
@@ -80,7 +79,8 @@ async def call_provider(
         detail = "Provider request failed"
         try:
             body = response.json()
-            detail = str(body.get("error", body.get("message", detail)))
+            if isinstance(body, dict):
+                detail = str(body.get("error", body.get("message", detail)))
         except ValueError:
             pass
         # Do not return provider response bodies that might contain sensitive data.
