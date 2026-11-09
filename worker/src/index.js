@@ -1,6 +1,6 @@
 const MODEL_LIST = [
-  {id:"gemini-2.5-flash",provider:"gemini",model:"gemini-2.5-flash",priority:10,context_window:1000000,capabilities:["chat","reasoning","vision"]},
-  {id:"llama-3.3-70b-versatile",provider:"groq",model:"llama-3.3-70b-versatile",priority:20,context_window:128000,capabilities:["chat","reasoning"]},
+  {id:"openai/gpt-oss-120b",provider:"groq",model:"openai/gpt-oss-120b",priority:10,context_window:131072,capabilities:["chat","reasoning","tool_use"]},
+  {id:"openai/gpt-oss-20b",provider:"groq",model:"openai/gpt-oss-20b",priority:20,context_window:131072,capabilities:["chat","reasoning","tool_use"]},
   {id:"openrouter-free",provider:"openrouter",model:"openrouter/free",priority:30,context_window:128000,capabilities:["chat"],disabled:true}
 ];
 const cors = {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET,POST,OPTIONS","Access-Control-Allow-Headers":"Authorization,Content-Type,X-API-Key"};
