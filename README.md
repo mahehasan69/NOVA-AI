@@ -37,11 +37,13 @@ NOVA routes chat requests across multiple AI providers, prioritizes explicitly c
 
 Provider credentials are read from environment variables. For BYOK, send the key in the `provider_keys` object in the JSON request body over HTTPS. BYOK keys are request-scoped, never written to the database, and are not returned in responses.
 
-Set `NOVA_API_KEY` before exposing the API publicly. In development only, an empty value permits local requests.
+Set `NOVA_API_KEY` before exposing the API publicly. In development only, an empty value permits local requests. The current `X-NOVA-User` identity header is a development/trusted-gateway mechanism, not end-user authentication. Do not expose this API directly to untrusted users until a real account/JWT authentication layer is implemented.
 
 The default model catalogue is in `config/models.json`. A model is eligible only when `free` is true and `enabled` is true. Verify provider pricing and free-tier eligibility before enabling a model. Set `free: false` to exclude a model.
 
 ## Chat request
+
+Send only the new turn when using a conversation ID; NOVA loads prior turns from its database. A full OpenAI-style message history is also accepted and NOVA attempts to detect the overlap with stored history.
 
 ```json
 {
@@ -80,8 +82,8 @@ Client -> API/Auth -> Conversation Store -> Prompt Engine
 - Use a managed secrets vault/KMS for shared credentials in production.
 - Replace the in-memory cooldown tracker with Redis or a durable shared store for multi-instance deployments.
 - Configure per-user request, token, and concurrency limits before public launch.
-- Add account registration and stronger identity management before allowing public multi-user deployment.
-- SQLite is suitable for local development and a small single-instance deployment; use PostgreSQL for a larger deployment.
+- Add real account authentication/JWT and PostgreSQL before public multi-user deployment.
+- SQLite is suitable for local development and a small single-instance deployment.
 - Provider APIs and free tiers can change. Check current provider documentation and terms.
 
 ## License
