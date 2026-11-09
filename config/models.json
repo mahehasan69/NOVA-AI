@@ -23,7 +23,7 @@
     {
       "id": "openrouter-free",
       "provider": "openrouter",
-      "provider_model": "openrouter/auto",
+      "provider_model": "openrouter/free",
       "free": true,
       "enabled": false,
       "context_window": 128000,
