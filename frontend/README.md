@@ -11,6 +11,10 @@ A zero-build, mobile-responsive frontend for the NOVA FastAPI gateway.
 
 The backend allows the localhost:3000 origin by default. For a different frontend origin, configure backend CORS before use.
 
+## Cloudflare Pages
+
+The `frontend/` directory is configured as the Cloudflare Pages build root, with no build command and `.` as the output directory.
+
 ## Security and limitations
 
 - **Development/trusted use only**: the backend does not yet have real user login. Do not expose this frontend and gateway as a public multi-user product.
