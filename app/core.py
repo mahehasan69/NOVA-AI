@@ -7,6 +7,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     nova_api_key: str = ""
+    nova_auth_secret: str = ""
+    auth_access_ttl: int = 900
+    auth_refresh_ttl: int = 2592000
     database_path: str = "./nova.db"
     models_file: str = "./config/models.json"
     request_timeout: float = 35.0
