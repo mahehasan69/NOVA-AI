@@ -1,24 +1,16 @@
 from __future__ import annotations
 
-import hashlib
 import time
-from collections import defaultdict
 from typing import Any
 
 from app.core import SHARED_KEYS, load_models, settings
 from app.providers import call_provider, ProviderError
+from app.quota import QuotaManager
 
 
 class ModelRouter:
     def __init__(self):
-        # Cooldowns are scoped to a credential fingerprint so one BYOK user's
-        # exhausted quota does not block every other user's key for that provider.
-        self.cooldowns: dict[str, float] = defaultdict(float)
-
-    @staticmethod
-    def _cooldown_id(provider: str, key: str) -> str:
-        fingerprint = hashlib.sha256(key.encode("utf-8")).hexdigest()[:16]
-        return f"{provider}:{fingerprint}"
+        self.quota = QuotaManager(settings.database_path)
 
     def models(self) -> list[dict]:
         return load_models()
@@ -50,7 +42,6 @@ class ModelRouter:
             if not selected:
                 raise ValueError("Requested model is not enabled in the free-model catalogue.")
             fallback = [m for m in models if m["id"] != requested_model] if allow_fallback else []
-            # A manually selected model is always attempted first.
             candidates = selected + sorted(fallback, key=lambda m: m.get("priority", 100))
         else:
             candidates = sorted(models, key=lambda m: m.get("priority", 100))
@@ -68,9 +59,9 @@ class ModelRouter:
                 failures.append({"provider": provider, "reason": "No shared or BYOK credential configured."})
                 continue
 
-            cooldown_id = self._cooldown_id(provider, key)
-            if self.cooldowns[cooldown_id] > time.time():
-                failures.append({"provider": provider, "reason": "Credential is temporarily cooling down after a provider limit or outage."})
+            cooldown = self.quota.remaining(provider, key)
+            if cooldown:
+                failures.append({"provider": provider, "reason": f"Credential cooling down for {cooldown}s."})
                 continue
 
             attempts += 1
@@ -84,16 +75,15 @@ class ModelRouter:
                     max_tokens=max_tokens,
                     temperature=temperature,
                 )
-                self.cooldowns[cooldown_id] = 0
+                self.quota.clear(provider, key)
                 return result, model, failures
             except ProviderError as exc:
-                # Do not echo arbitrary provider response bodies to the client.
                 reason = f"HTTP {exc.status_code}" if exc.status_code else "Network timeout or connection failure"
                 failures.append({"provider": provider, "reason": reason})
                 if exc.status_code == 429:
-                    self.cooldowns[cooldown_id] = time.time() + 60
+                    self.quota.defer(provider, key, 60, "rate_limit")
                 elif exc.status_code in (408, 409, 425, 500, 502, 503, 504) or exc.status_code is None:
-                    self.cooldowns[cooldown_id] = time.time() + 20
+                    self.quota.defer(provider, key, 20, "temporary_failure")
 
             if attempts >= max(1, settings.max_failovers):
                 break
