@@ -41,13 +41,13 @@ A responsive, zero-build chat frontend is available in [`frontend/`](frontend/RE
 python -m http.server 3000 --directory frontend
 ```
 
-Open `http://localhost:3000`, configure the gateway URL and optional API keys in Settings, and start chatting. Includes model selection, local session conversation list, provider status, and automatic model routing. **For local/trusted development only:** real user authentication and secure public deployment are not implemented yet.
+Open `http://localhost:3000`, configure the gateway URL and optional API keys in Settings, and start chatting. Includes model selection, local session conversation list, provider status, and automatic model routing. Account login is available when NOVA_AUTH_SECRET is configured. Keep the gateway private until HTTPS, rate limits, and production deployment controls are configured.
 
 ## Configuration
 
 Provider credentials are read from environment variables. For BYOK, send the key in the `provider_keys` object in the JSON request body over HTTPS. BYOK keys are request-scoped, never written to the database, and are not returned in responses.
 
-Set `NOVA_API_KEY` before exposing the API publicly. In development only, an empty value permits local requests. The current `X-NOVA-User` identity header is a development/trusted-gateway mechanism, not end-user authentication. Do not expose this API directly to untrusted users until a real account/JWT authentication layer is implemented.
+Set `NOVA_AUTH_SECRET` to a random secret of at least 32 characters to enable account registration and JWT authentication. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(48))"`. Access tokens expire after 15 minutes by default; refresh tokens are single-use and rotate on refresh. Passwords are hashed with scrypt, refresh tokens are stored only as SHA-256 hashes, and bearer-token identities scope conversation history. `NOVA_API_KEY` remains a trusted server-to-server key. If neither is configured, the API runs in local-development mode only; never expose that mode publicly.
 
 The default model catalogue is in `config/models.json`. A model is eligible only when `free` is true and `enabled` is true. Verify provider pricing and free-tier eligibility before enabling a model. Set `free: false` to exclude a model.
 
@@ -73,6 +73,11 @@ Use `model: "auto"` for automatic selection or a registered model ID to request 
 ## API endpoints
 
 - `GET /health` — service health
+- `POST /v1/auth/register` — create an account (requires `NOVA_AUTH_SECRET`)
+- `POST /v1/auth/login` — obtain access and refresh tokens
+- `POST /v1/auth/refresh` — rotate a refresh token
+- `POST /v1/auth/logout` — revoke a refresh token
+- `GET /v1/auth/me` — current account
 - `GET /v1/models` — enabled free models
 - `GET /v1/providers` — provider readiness (never exposes credentials)
 - `GET /v1/quota/status` — active provider cooldowns (no key fingerprints)
@@ -94,7 +99,7 @@ Client -> API/Auth -> Conversation Store -> Prompt Engine
 - Use a managed secrets vault/KMS for shared credentials in production.
 - Replace the in-memory cooldown tracker with Redis or a durable shared store for multi-instance deployments.
 - Configure per-user request, token, and concurrency limits before public launch.
-- Add real account authentication/JWT and PostgreSQL before public multi-user deployment.
+- Add rate limiting, email verification, password reset, abuse monitoring, and PostgreSQL before public multi-user deployment.
 - SQLite is suitable for local development and a small single-instance deployment.
 - Provider APIs and free tiers can change. Check current provider documentation and terms.
 - The Model Radar's zero-price check is a discovery hint, not proof of a permanent free tier or unrestricted usage. Every candidate requires manual verification before adding it to the active catalogue.
