@@ -1,7 +1,7 @@
 "use strict";
 const $ = id => document.getElementById(id);
 const providerNames = ["gemini","groq","openrouter","mistral","cerebras","cohere"];
-const state = {url: sessionStorage.getItem("nova_url") || "http://localhost:8000", novaKey:"", keys:{}, chats:[], active:null, busy:false};
+const state = {url: sessionStorage.getItem("nova_url") || "https://nova-ai-api.mahehassan69.workers.dev", novaKey:"", keys:{}, chats:[], active:null, busy:false};
 const saved = sessionStorage.getItem("nova_chats");
 if(saved){try{const parsed=JSON.parse(saved);if(Array.isArray(parsed))state.chats=parsed.filter(c=>c&&typeof c.id==="string"&&Array.isArray(c.messages)).slice(0,40)}catch{}}
 function persist(){sessionStorage.setItem("nova_chats",JSON.stringify(state.chats.map(c=>({...c,messages:c.messages.slice(-60)}))))}
