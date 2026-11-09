@@ -6,7 +6,7 @@ A zero-build, mobile-responsive frontend for the NOVA FastAPI gateway.
 
 1. Start the backend from the repository root: `uvicorn app.main:app --reload`.
 2. From the repository root run `python -m http.server 3000 --directory frontend`.
-3. Visit `http://localhost:3000`. The default gateway URL is `http://localhost:8000`.
+3. Visit `http://localhost:3000`. The default gateway URL is `https://nova-ai-api.mahehassan69.workers.dev`. For local development, change it to `http://localhost:8000`.
 4. In Settings, configure the gateway URL and, if configured on the backend, its `NOVA_API_KEY`. Optionally provide BYOK provider keys.
 
 The backend allows the localhost:3000 origin by default. For a different frontend origin, configure backend CORS before use.
