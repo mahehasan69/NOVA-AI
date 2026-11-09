@@ -18,7 +18,7 @@ async function passwordHash(password,salt){
  try{
   const key=await crypto.subtle.importKey("raw",enc(password),"PBKDF2",false,["deriveBits"]);
   stage="derive_bits";
-  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:unb64(salt),iterations:310000,hash:"SHA-256"},key,256);
+  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:unb64(salt),iterations:100000,hash:"SHA-256"},key,256);
   return b64(bits);
  }catch(e){const err=new Error("password_hash_"+stage+": "+(e instanceof Error?e.name+": "+e.message:String(e)));err.name="PasswordHashError";throw err}
 }
