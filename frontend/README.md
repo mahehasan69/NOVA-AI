@@ -23,3 +23,6 @@ The `frontend/` directory is configured as the Cloudflare Pages build root, with
 - The interface renders AI replies as plain text, not executable HTML or Markdown.
 - This is a non-streaming text chat UI. Refreshing loses API keys; the server retains conversation history, but the frontend only tracks session-local conversation IDs.
 - No paid UI libraries, build tooling, or frontend hosting requirements.
+
+
+Cloudflare Pages deployment watch path: `frontend/**`.
