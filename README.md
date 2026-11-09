@@ -65,6 +65,8 @@ Use `model: "auto"` for automatic selection or a registered model ID to request 
 - `GET /health` — service health
 - `GET /v1/models` — enabled free models
 - `GET /v1/providers` — provider readiness (never exposes credentials)
+- `GET /v1/quota/status` — active provider cooldowns (no key fingerprints)
+- `GET /v1/radar/openrouter/free` — discover zero-listed-price OpenRouter candidates; manual review required, never auto-enables models
 - `POST /v1/chat/completions` — OpenAI-compatible chat endpoint
 - `GET /v1/conversations/{conversation_id}` — authenticated user's conversation history
 
@@ -85,6 +87,8 @@ Client -> API/Auth -> Conversation Store -> Prompt Engine
 - Add real account authentication/JWT and PostgreSQL before public multi-user deployment.
 - SQLite is suitable for local development and a small single-instance deployment.
 - Provider APIs and free tiers can change. Check current provider documentation and terms.
+- The Model Radar's zero-price check is a discovery hint, not proof of a permanent free tier or unrestricted usage. Every candidate requires manual verification before adding it to the active catalogue.
+- Quota cooldowns are persisted in SQLite and isolated by a one-way credential fingerprint; raw provider keys are never stored in quota records.
 
 ## License
 
