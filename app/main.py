@@ -5,7 +5,7 @@ import uuid
 
 from fastapi import FastAPI, Header, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 from app.auth import AuthError, AuthStore
 from app.core import settings
@@ -39,7 +39,7 @@ auth_store = (
 
 
 class Credentials(BaseModel):
-    email: EmailStr
+    email: str = Field(min_length=3, max_length=254)
     password: str = Field(min_length=1, max_length=256)
 
 
