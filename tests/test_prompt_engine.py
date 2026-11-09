@@ -1,4 +1,8 @@
-from app.prompt_engine import build_messages, make_rolling_summary
+from app.prompt_engine import (
+    build_messages,
+    extract_new_messages,
+    make_rolling_summary,
+)
 
 
 def test_prompt_keeps_summary_and_recent_history():
@@ -20,3 +24,23 @@ def test_summary_is_extractively_built():
     ])
     assert "user: Hello there" in result
     assert "assistant: Hi" in result
+
+
+def test_full_client_history_only_persists_new_turn():
+    stored = [
+        {"role": "user", "content": "First"},
+        {"role": "assistant", "content": "Answer one"},
+    ]
+    incoming = [
+        {"role": "user", "content": "First"},
+        {"role": "assistant", "content": "Answer one"},
+        {"role": "user", "content": "Second"},
+    ]
+    assert extract_new_messages(stored, incoming) == [
+        {"role": "user", "content": "Second"}
+    ]
+
+
+def test_single_repeated_message_is_a_new_turn():
+    repeated = [{"role": "user", "content": "Again"}]
+    assert extract_new_messages(repeated, repeated) == repeated
