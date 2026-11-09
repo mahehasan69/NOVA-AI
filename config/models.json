@@ -1,0 +1,54 @@
+{
+  "models": [
+    {
+      "id": "gemini-2.5-flash",
+      "provider": "gemini",
+      "provider_model": "gemini-2.5-flash",
+      "free": true,
+      "enabled": true,
+      "context_window": 1000000,
+      "capabilities": ["chat", "reasoning", "vision"],
+      "priority": 10
+    },
+    {
+      "id": "llama-3.3-70b-versatile",
+      "provider": "groq",
+      "provider_model": "llama-3.3-70b-versatile",
+      "free": true,
+      "enabled": true,
+      "context_window": 128000,
+      "capabilities": ["chat", "reasoning"],
+      "priority": 20
+    },
+    {
+      "id": "openrouter-free",
+      "provider": "openrouter",
+      "provider_model": "openrouter/auto",
+      "free": true,
+      "enabled": false,
+      "context_window": 128000,
+      "capabilities": ["chat"],
+      "priority": 30
+    },
+    {
+      "id": "qwen3-32b",
+      "provider": "cerebras",
+      "provider_model": "qwen-3-32b",
+      "free": true,
+      "enabled": false,
+      "context_window": 128000,
+      "capabilities": ["chat", "reasoning"],
+      "priority": 40
+    },
+    {
+      "id": "mistral-small-latest",
+      "provider": "mistral",
+      "provider_model": "mistral-small-latest",
+      "free": false,
+      "enabled": false,
+      "context_window": 32000,
+      "capabilities": ["chat"],
+      "priority": 50
+    }
+  ]
+}
