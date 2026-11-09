@@ -10,6 +10,7 @@ from app.core import settings
 from app.memory import ConversationStore
 from app.prompt_engine import build_messages, extract_new_messages, make_rolling_summary
 from app.router import router
+from app.radar import discover_openrouter_free_models
 from app.schemas import ChatRequest, ChatResponse, ChatChoice
 
 
@@ -78,6 +79,26 @@ def list_models(_: str = Depends(authenticate)):
 @app.get("/v1/providers")
 def list_providers(_: str = Depends(authenticate)):
     return {"providers": router.providers_status()}
+
+
+@app.get("/v1/quota/status")
+def quota_status(_: str = Depends(authenticate)):
+    # Exposes provider names and cooldowns only; never credential fingerprints or keys.
+    return {"cooldowns": router.quota.snapshot()}
+
+
+@app.get("/v1/radar/openrouter/free")
+async def openrouter_free_radar(_: str = Depends(authenticate)):
+    try:
+        candidates = await discover_openrouter_free_models(settings.request_timeout)
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Model discovery is temporarily unavailable.") from exc
+    return {
+        "source": "OpenRouter public model catalogue",
+        "count": len(candidates),
+        "automatic_enable": False,
+        "candidates": candidates,
+    }
 
 
 @app.post("/v1/chat/completions", response_model=ChatResponse)
