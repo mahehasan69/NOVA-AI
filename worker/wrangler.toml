@@ -1,0 +1,11 @@
+name = "nova-ai-api"
+main = "src/index.js"
+compatibility_date = "2026-11-10"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nova-ai-db"
+database_id = "a2a7cd36-ff08-4382-83e6-de932f89add8"
+
+[vars]
+DEBUG = "false"
