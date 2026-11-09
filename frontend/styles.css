@@ -10,3 +10,12 @@
 .account-actions #logoutAccount{background:transparent;border-color:#48465f;color:#b9b7ca}
 #accountStatus{min-height:22px;margin-top:12px;font-size:12px;line-height:1.6;color:#aaa7c2;overflow-wrap:anywhere}
 @media(max-width:740px){.account-actions{gap:8px}.account-actions button{flex:1 1 auto;min-width:0}.account-actions #registerAccount{flex-basis:100%}}
+
+.auth-screen{min-height:100dvh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse 55% 45% at 50% 35%,#211b3a 0%,#0a0b12 75%)}
+.auth-card{width:min(440px,100%);padding:34px;background:#151622;border:1px solid #39364f;border-radius:22px;box-shadow:0 24px 90px #0008}
+.auth-brand{font-size:22px;font-weight:850;letter-spacing:.07em;margin-bottom:42px}.auth-brand span{color:#a29aff}
+.auth-card h1{font-size:27px;margin:12px 0}.auth-card p{font-size:13px;color:#a09fb5;line-height:1.7;margin:0 0 25px}
+.auth-card label{display:block;font-size:12px;color:#d4d2e6;margin:16px 0 7px}.auth-card input{width:100%;background:#202130;border:1px solid #414056;border-radius:11px;padding:14px;color:#fff;outline:none;font-size:14px}.auth-card input:focus{border-color:#9584e9}
+.auth-primary{width:100%;border:0;border-radius:11px;background:#8d79f5;color:white;padding:14px;font-weight:750;margin-top:23px}.auth-switch{display:block;width:100%;border:0;background:transparent;color:#b6aaff;padding:16px 8px 5px;font-size:12px}
+#authFeedback{min-height:22px;color:#ffb5bd;font-size:12px;margin-top:10px}[hidden]{display:none!important}
+@media(max-width:520px){.auth-screen{padding:16px}.auth-card{padding:26px 22px;border-radius:18px}}
