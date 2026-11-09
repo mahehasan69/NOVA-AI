@@ -13,7 +13,15 @@ async function sha(s){return hex(await crypto.subtle.digest("SHA-256",enc(s)))}
 async function hmac(secret,data){const k=await crypto.subtle.importKey("raw",enc(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);return b64(await crypto.subtle.sign("HMAC",k,enc(data)))}
 async function token(env,sub,ttl){const now=Math.floor(Date.now()/1000),body=b64(enc(JSON.stringify({sub,iat:now,exp:now+ttl}))),head=b64(enc(JSON.stringify({alg:"HS256",typ:"JWT"}))),input=head+"."+body;return input+"."+await hmac(env.JWT_SECRET,input)}
 async function verify(env,t){try{const [h,p,s]=t.split("."),input=h+"."+p;if(!h||!p||!s||!((await hmac(env.JWT_SECRET,input))===s))return null;const c=JSON.parse(new TextDecoder().decode(unb64(p)));return c.exp>Date.now()/1000?c.sub:null}catch{return null}}
-async function passwordHash(password,salt){const key=await crypto.subtle.importKey("raw",enc(password),"PBKDF2",false,["deriveBits"]);return b64(await crypto.subtle.deriveBits({name:"PBKDF2",salt:unb64(salt),iterations:310000,hash:"SHA-256"},key,256))}
+async function passwordHash(password,salt){
+ let stage="import_key";
+ try{
+  const key=await crypto.subtle.importKey("raw",enc(password),"PBKDF2",false,["deriveBits"]);
+  stage="derive_bits";
+  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:unb64(salt),iterations:310000,hash:"SHA-256"},key,256);
+  return b64(bits);
+ }catch(e){const err=new Error("password_hash_"+stage+": "+(e instanceof Error?e.name+": "+e.message:String(e)));err.name="PasswordHashError";throw err}
+}
 function uid(){return crypto.randomUUID()}
 async function issue(env,user){const access=await token(env,user,900),refresh=crypto.randomUUID()+crypto.randomUUID();await env.DB.prepare("INSERT INTO refresh_sessions(token_hash,user_id,expires_at,created_at) VALUES(?,?,?,?)").bind(await sha(refresh),user,Math.floor(Date.now()/1000)+2592000,Math.floor(Date.now()/1000)).run();return {access_token:access,refresh_token:refresh,token_type:"bearer",expires_in:900}}
 async function auth(req,env){if(env.NOVA_API_KEY&&req.headers.get("X-API-Key")===env.NOVA_API_KEY)return "trusted-gateway";const a=req.headers.get("Authorization")||"";if(a.startsWith("Bearer ")){const sub=await verify(env,a.slice(7));if(sub)return sub}return null}
