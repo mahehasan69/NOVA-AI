@@ -11,15 +11,43 @@ BASE_INSTRUCTIONS = (
 )
 
 
+def extract_new_messages(
+    history: list[dict[str, Any]],
+    incoming: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Accept either a single-turn payload or a full OpenAI-style message history.
+
+    For multi-message payloads, find the longest suffix of stored history that
+    appears contiguously in the incoming history and persist only what follows it.
+    A single message is always treated as a new turn (even if text repeats).
+    """
+    current = [m for m in incoming if m.get("role") != "system"]
+    if len(current) <= 1 or not history:
+        return current
+
+    max_overlap = min(len(history), len(current))
+    for size in range(max_overlap, 0, -1):
+        suffix = history[-size:]
+        for start in range(0, len(current) - size + 1):
+            segment = current[start:start + size]
+            if all(
+                left.get("role") == right.get("role")
+                and left.get("content") == right.get("content")
+                for left, right in zip(suffix, segment)
+            ):
+                return current[start + size:]
+    return current
+
+
 def build_messages(
     incoming: list[dict[str, Any]],
     history: list[dict[str, Any]],
     summary: str,
     max_messages: int,
 ) -> list[dict[str, Any]]:
-    # The current request is appended after stored history; avoid duplicating it.
-    current = [m for m in incoming if m.get("role") != "system"]
     explicit_system = [m for m in incoming if m.get("role") == "system"]
+    delta = extract_new_messages(history, incoming)
+    merged_history = history + delta
     messages: list[dict[str, Any]] = [{"role": "system", "content": BASE_INSTRUCTIONS}]
     messages.extend(explicit_system[-3:])
     if summary:
@@ -27,14 +55,7 @@ def build_messages(
             "role": "system",
             "content": "Conversation summary (may be incomplete; recent messages take precedence):\n" + summary,
         })
-    recent = history[-max_messages:]
-    if current and recent:
-        last = recent[-1]
-        first = current[0]
-        if last["role"] == first["role"] and last["content"] == first["content"]:
-            recent = recent[:-1]
-    messages.extend(recent)
-    messages.extend(current)
+    messages.extend(merged_history[-max_messages:])
     return messages
 
 
