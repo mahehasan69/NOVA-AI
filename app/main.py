@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import secrets
 import uuid
-from typing import Any
 
 from fastapi import FastAPI, Header, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core import settings
 from app.memory import ConversationStore
-from app.prompt_engine import build_messages, make_rolling_summary
+from app.prompt_engine import build_messages, extract_new_messages, make_rolling_summary
 from app.router import router
 from app.schemas import ChatRequest, ChatResponse, ChatChoice
 
@@ -120,8 +119,8 @@ async def chat(body: ChatRequest, user_id: str = Depends(authenticate)):
         raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     assistant_message = {"role": "assistant", "content": result["content"]}
-    persisted = [m for m in incoming if m["role"] in ("user", "assistant")]
-    persisted.append(assistant_message)
+    new_user_messages = extract_new_messages(history, incoming)
+    persisted = new_user_messages + [assistant_message]
     try:
         store.append(user_id, conversation_id, persisted, selected_model["id"])
         updated_summary = make_rolling_summary(summary, persisted)
