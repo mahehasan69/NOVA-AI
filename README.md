@@ -33,6 +33,16 @@ NOVA routes chat requests across multiple AI providers, prioritizes explicitly c
    ```
 4. Open `http://localhost:8000/docs`.
 
+## NOVA Web App (Phase 3 preview)
+
+A responsive, zero-build chat frontend is available in [`frontend/`](frontend/README.md). Start the backend, then run:
+
+```bash
+python -m http.server 3000 --directory frontend
+```
+
+Open `http://localhost:3000`, configure the gateway URL and optional API keys in Settings, and start chatting. Includes model selection, local session conversation list, provider status, and automatic model routing. **For local/trusted development only:** real user authentication and secure public deployment are not implemented yet.
+
 ## Configuration
 
 Provider credentials are read from environment variables. For BYOK, send the key in the `provider_keys` object in the JSON request body over HTTPS. BYOK keys are request-scoped, never written to the database, and are not returned in responses.
