@@ -8,10 +8,11 @@ const MODEL_LIST = [
   {id:"sambanova/Meta-Llama-3.3-70B-Instruct",provider:"sambanova",model:"Meta-Llama-3.3-70B-Instruct",priority:30,context_window:128000,capabilities:["chat"]},
   {id:"sambanova/DeepSeek-V3.1",provider:"sambanova",model:"DeepSeek-V3.1",priority:32,context_window:128000,capabilities:["chat","reasoning"]},
   {id:"zai/glm-5-3-flash",provider:"zai",model:"glm-5-3-flash",priority:40,context_window:200000,capabilities:["chat","reasoning"]},
-  {id:"nvidia/deepseek-ai/deepseek-v4-flash",provider:"nvidia",model:"deepseek-ai/deepseek-v4-flash",priority:50,context_window:1000000,capabilities:["chat","reasoning"]},
-  {id:"nvidia/deepseek-ai/deepseek-v4-pro",provider:"nvidia",model:"deepseek-ai/deepseek-v4-pro",priority:55,context_window:1000000,capabilities:["chat","reasoning"]},
-  {id:"nvidia/moonshotai/kimi-k3.1-pro",provider:"nvidia",model:"moonshotai/kimi-k3.1-pro",priority:57,context_window:1048576,capabilities:["chat","reasoning","vision"]},
-  {id:"nvidia/nemotron-3.5-super-vl-120b-a12b",provider:"nvidia",model:"nvidia/nemotron-3.5-super-vl-120b-a12b",priority:60,context_window:262144,capabilities:["chat","reasoning"]},
+  {id:"nvidia/deepseek-ai/deepseek-v4.1-flash",provider:"nvidia",model:"deepseek-ai/deepseek-v4.1-flash",priority:50,context_window:1000000,capabilities:["chat","reasoning","vision"]},
+  {id:"nvidia/moonshotai/kimi-k3",provider:"nvidia",model:"moonshotai/kimi-k3",priority:55,context_window:1048576,capabilities:["chat","reasoning"]},
+  {id:"nvidia/nvidia/nemotron-3.5-super-vl-120b-a12b",provider:"nvidia",model:"nvidia/nemotron-3.5-super-vl-120b-a12b",priority:60,context_window:262144,capabilities:["chat","reasoning","vision"]},
+  {id:"nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",provider:"nvidia",model:"nvidia/nemotron-3.5-lightning-30b-a3b",priority:62,context_window:262144,capabilities:["chat","reasoning"]},
+  {id:"nvidia/nvidia/nemotron-3.5-bolt-e4b",provider:"nvidia",model:"nvidia/nemotron-3.5-bolt-e4b",priority:64,context_window:262144,capabilities:["chat","reasoning"]},
   {id:"deepseek-chat",provider:"deepseek",model:"deepseek-chat",priority:65,context_window:65536,capabilities:["chat"]},
   {id:"deepseek-reasoner",provider:"deepseek",model:"deepseek-reasoner",priority:70,context_window:65536,capabilities:["chat","reasoning"]}
 ];
