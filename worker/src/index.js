@@ -1,6 +1,9 @@
 const MODEL_LIST = [
   {id:"openai/gpt-oss-120b",provider:"groq",model:"openai/gpt-oss-120b",priority:10,context_window:131072,capabilities:["chat","reasoning","tool_use"]},
   {id:"openai/gpt-oss-20b",provider:"groq",model:"openai/gpt-oss-20b",priority:20,context_window:131072,capabilities:["chat","reasoning","tool_use"]},
+  {id:"gemini/gemini-2.5-flash",provider:"gemini",model:"gemini-2.5-flash",priority:22,context_window:1000000,capabilities:["chat","reasoning"]},
+  {id:"gemini/gemini-2.5-pro",provider:"gemini",model:"gemini-2.5-pro",priority:23,context_window:1000000,capabilities:["chat","reasoning"]},
+  {id:"gemini/gemini-2.0-flash",provider:"gemini",model:"gemini-2.0-flash",priority:24,context_window:1000000,capabilities:["chat"]},
   {id:"openrouter/free",provider:"openrouter",model:"openrouter/free",priority:25,context_window:128000,capabilities:["chat"]},
   {id:"sambanova/Meta-Llama-3.3-70B-Instruct",provider:"sambanova",model:"Meta-Llama-3.3-70B-Instruct",priority:30,context_window:128000,capabilities:["chat"]},
   {id:"sambanova/DeepSeek-V3.1",provider:"sambanova",model:"DeepSeek-V3.1",priority:32,context_window:128000,capabilities:["chat","reasoning"]},
